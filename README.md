@@ -110,7 +110,7 @@ The main signal regresses cosine distance to a normalized mutation target:
 
 
 
-$$ \mathcal{L}_{\mathrm{reg}} = \left(d(\bar{z}(r), \bar{z}(v)) - \tilde{n}\right)^2,\quad \tilde{n}=\min\left(\frac{n_{\text{mut}}}{\texttt{max\_n\_mut}}, 1\right). $$
+$$ \mathcal{L}_{\mathrm{reg}} = \left(d(\bar{z}(r), \bar{z}(v)) - \tilde{n}\right)^2,\quad \tilde{n}=\min\left(\frac{n_{\text{mut}}}{\texttt{max\\_n\\_mut}}, 1\right). $$
 
 
 
@@ -124,7 +124,7 @@ For adjacent items with $\Delta n = n_{i+1}-n_i > 0$ and $\Delta d = d_{i+1}-d_i
 
 
 
-$$ \mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d), \quad m(\Delta n) = \texttt{margin\_scale}\cdot \Delta n. $$
+$$ \mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d), \quad m(\Delta n) = \texttt{margin\\_scale}\cdot \Delta n. $$
 
 
 
