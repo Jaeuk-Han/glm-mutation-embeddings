@@ -118,7 +118,7 @@ Defaults: `max_n_mut=20.0` (target is clamped to $[0,1]$).
 
 #### 2) PCC ranking loss (within-group monotonicity)
 
-For each `group_id`, we sort samples by $n_{\text{mut}}$ and apply a hinge loss over adjacent pairs only (for efficiency). Let $d_i = d(\hat{u}_{\mathrm{pcc}}(r_i), \hat{u}_{\mathrm{pcc}}(v_i))$. For adjacent items with $\Delta n = n_{i+1} - n_i > 0$ and $\Delta d = d_{i+1} - d_i$:
+For each `group_id`, we sort samples by $n_{\mathrm{mut}}$ and apply a hinge loss over adjacent pairs only (for efficiency). Let $d_i = d(\hat{u}_{\mathrm{pcc}}(r_i), \hat{u}_{\mathrm{pcc}}(v_i))$. For adjacent items with $\Delta n = n_{i+1} - n_i > 0$ and $\Delta d = d_{i+1} - d_i$:
 
 
 
