@@ -49,10 +49,7 @@ Given a DNA sequence $x$, dna2vec produces token-level hidden states. We mean-po
 
 
 
-$$
-h(x) = \mathrm{meanpool}(\mathrm{dna2vec}(x)), \qquad
-\bar{h}(x) = \frac{h(x)}{\lVert h(x)\rVert_2}.
-$$
+$$ h(x) = \mathrm{meanpool}(\mathrm{dna2vec}(x)), \qquad \bar{h}(x) = \frac{h(x)}{\lVert h(x)\rVert_2}. $$
 
 
 
@@ -64,26 +61,17 @@ We use two MLP branches (CD/CDD branch + PCC branch). Each branch output is L2-n
 
 
 
-$$
-u_{\mathrm{cd}} = f_{\mathrm{cd}}(\bar{h}), \quad
-u_{\mathrm{pcc}} = f_{\mathrm{pcc}}(\bar{h})
-$$
+$$ u_{\mathrm{cd}} = f_{\mathrm{cd}}(\bar{h}), \quad u_{\mathrm{pcc}} = f_{\mathrm{pcc}}(\bar{h}) $$
 
 
 
 
-$$
-\hat{u}_{\mathrm{cd}} = \frac{u_{\mathrm{cd}}}{\lVert u_{\mathrm{cd}}\rVert_2}, \quad
-\hat{u}_{\mathrm{pcc}} = \frac{u_{\mathrm{pcc}}}{\lVert u_{\mathrm{pcc}}\rVert_2}
-$$
+$$ \hat{u}_{\mathrm{cd}} = \frac{u_{\mathrm{cd}}}{\lVert u_{\mathrm{cd}}\rVert_2}, \quad \hat{u}_{\mathrm{pcc}} = \frac{u_{\mathrm{pcc}}}{\lVert u_{\mathrm{pcc}}\rVert_2} $$
 
 
 
 
-$$
-z = \mathrm{concat}(\alpha \hat{u}_{\mathrm{cd}}, \beta \hat{u}_{\mathrm{pcc}}), \qquad
-\bar{z} = \frac{z}{\lVert z\rVert_2}.
-$$
+$$ z = \mathrm{concat}(\alpha \hat{u}_{\mathrm{cd}}, \beta \hat{u}_{\mathrm{pcc}}), \qquad \bar{z} = \frac{z}{\lVert z\rVert_2}. $$
 
 
 
@@ -98,9 +86,7 @@ All training/eval objectives use **cosine distance** on normalized embeddings:
 
 
 
-$$
-d(a,b) = 1 - \cos(a,b).
-$$
+$$ d(a,b) = 1 - \cos(a,b). $$
 
 
 
@@ -110,11 +96,7 @@ For each (ref, var) pair with mutation count $n_{\text{mut}}$, the total loss is
 
 
 
-$$
-\mathcal{L} = \mathcal{L}_{\mathrm{reg}}
-+ \lambda_{\mathrm{pcc}} \mathcal{L}_{\mathrm{pcc}}
-+ \lambda_{\mathrm{cd}} \mathcal{L}_{\mathrm{scale}}.
-$$
+$$ \mathcal{L} = \mathcal{L}_{\mathrm{reg}} + \lambda_{\mathrm{pcc}} \mathcal{L}_{\mathrm{pcc}} + \lambda_{\mathrm{cd}} \mathcal{L}_{\mathrm{scale}}. $$
 
 
 
@@ -128,11 +110,7 @@ The main signal regresses cosine distance to a normalized mutation target:
 
 
 
-$$
-\mathcal{L}_{\mathrm{reg}} =
-\left(d(\bar{z}(r), \bar{z}(v)) - \tilde{n}\right)^2,\quad
-\tilde{n}=\min\left(\frac{n_{\text{mut}}}{\texttt{max\_n\_mut}}, 1\right).
-$$
+$$ \mathcal{L}_{\mathrm{reg}} = \left(d(\bar{z}(r), \bar{z}(v)) - \tilde{n}\right)^2,\quad \tilde{n}=\min\left(\frac{n_{\text{mut}}}{\texttt{max\_n\_mut}}, 1\right). $$
 
 
 
@@ -146,10 +124,7 @@ For adjacent items with $\Delta n = n_{i+1}-n_i > 0$ and $\Delta d = d_{i+1}-d_i
 
 
 
-$$
-\mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d),
-\quad m(\Delta n) = \texttt{margin\_scale}\cdot \Delta n.
-$$
+$$ \mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d), \quad m(\Delta n) = \texttt{margin\_scale}\cdot \Delta n. $$
 
 
 
@@ -161,10 +136,7 @@ We keep the mean distance near a target CD:
 
 
 
-$$
-\mathcal{L}_{\mathrm{scale}} =
-\left(\mathbb{E}\left[d(\bar{z}(r),\bar{z}(v))\right] - \mu_{\text{target}}\right)^2.
-$$
+$$ \mathcal{L}_{\mathrm{scale}} = \left(\mathbb{E}\left[d(\bar{z}(r),\bar{z}(v))\right] - \mu_{\text{target}}\right)^2. $$
 
 
 
