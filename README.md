@@ -128,6 +128,9 @@ $$ \mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d), 
 
 Default: `margin_scale=1e-3`.
 
+We denote this as $\gamma$ in the equation above.
+
+
 #### 3) CD scale anchoring (global distance scale)
 
 We keep the mean distance near a target CD:
