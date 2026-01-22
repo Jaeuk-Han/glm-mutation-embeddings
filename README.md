@@ -122,13 +122,11 @@ For each `group_id`, we sort samples by $n_{\text{mut}}$ and apply a hinge loss 
 
 
 
-$$ \mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d), \quad m(\Delta n) = \texttt{margin\\_scale}\cdot \Delta n. $$
+$$ \mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d), \quad m(\Delta n) = \gamma \cdot \Delta n. $$
 
 
 
-Default: `margin_scale=1e-3`.
-
-We denote this as $\gamma$ in the equation above.
+Default: `margin_scale=1e-3` (denoted as $\gamma$ in the equation above).
 
 
 #### 3) CD scale anchoring (global distance scale)
