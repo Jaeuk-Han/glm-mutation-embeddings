@@ -122,7 +122,6 @@ For each `group_id`, we sort samples by $n_{\text{mut}}$ and apply a hinge loss 
 
 
 
-
 $$ \mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d), \quad m(\Delta n) = \texttt{margin\\_scale}\cdot \Delta n. $$
 
 
