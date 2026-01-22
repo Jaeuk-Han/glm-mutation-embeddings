@@ -45,12 +45,16 @@ This repo uses a frozen **dna2vec** backbone and trains a lightweight **dual-hea
 
 ### Backbone embedding
 
-Given a DNA sequence \(x\), dna2vec produces token-level hidden states. We mean-pool over the sequence length and apply L2-normalization:
+Given a DNA sequence $x$, dna2vec produces token-level hidden states. We mean-pool over the sequence length and apply L2-normalization:
 
-\[
+
+
+$$
 h(x) = \mathrm{meanpool}(\mathrm{dna2vec}(x)), \qquad
 \bar{h}(x) = \frac{h(x)}{\lVert h(x)\rVert_2}.
-\]
+$$
+
+
 
 In the best setup, the backbone is **frozen** and only the projection head is trained.
 
@@ -58,68 +62,96 @@ In the best setup, the backbone is **frozen** and only the projection head is tr
 
 We use two MLP branches (CD/CDD branch + PCC branch). Each branch output is L2-normalized, then concatenated and normalized again:
 
-\[
+
+
+$$
 u_{\mathrm{cd}} = f_{\mathrm{cd}}(\bar{h}), \quad
 u_{\mathrm{pcc}} = f_{\mathrm{pcc}}(\bar{h})
-\]
-\[
+$$
+
+
+
+
+$$
 \hat{u}_{\mathrm{cd}} = \frac{u_{\mathrm{cd}}}{\lVert u_{\mathrm{cd}}\rVert_2}, \quad
 \hat{u}_{\mathrm{pcc}} = \frac{u_{\mathrm{pcc}}}{\lVert u_{\mathrm{pcc}}\rVert_2}
-\]
-\[
+$$
+
+
+
+
+$$
 z = \mathrm{concat}(\alpha \hat{u}_{\mathrm{cd}}, \beta \hat{u}_{\mathrm{pcc}}), \qquad
 \bar{z} = \frac{z}{\lVert z\rVert_2}.
-\]
+$$
 
-- Learnable scalars: \(\alpha, \beta\) (initialized to 1.0)
+
+
+- Learnable scalars: $\alpha, \beta$ (initialized to 1.0)
 - Default dims (best): `cd_dim=768`, `pcc_dim=256` → `out_dim=1024`
-- CD/CDD head: Linear(\(H\to 2H\)) → LayerNorm → GELU → Dropout(0.2) → Linear(\(2H\to 768\))
-- PCC head: Linear(\(H\to H\)) → GELU → Linear(\(H\to 256\))
+- CD/CDD head: Linear($H\to 2H$) → LayerNorm → GELU → Dropout(0.2) → Linear($2H\to 768$)
+- PCC head: Linear($H\to H$) → GELU → Linear($H\to 256$)
 
 ### Distance definition
 
 All training/eval objectives use **cosine distance** on normalized embeddings:
 
-\[
+
+
+$$
 d(a,b) = 1 - \cos(a,b).
-\]
+$$
+
+
 
 ### Training objective (projection-head-only stage)
 
-For each (ref, var) pair with mutation count \(n_{\text{mut}}\), the total loss is:
+For each (ref, var) pair with mutation count $n_{\text{mut}}$, the total loss is:
 
-\[
+
+
+$$
 \mathcal{L} = \mathcal{L}_{\mathrm{reg}}
 + \lambda_{\mathrm{pcc}} \mathcal{L}_{\mathrm{pcc}}
 + \lambda_{\mathrm{cd}} \mathcal{L}_{\mathrm{scale}}.
-\]
+$$
+
+
 
 Default weights (as in the training script):
-- \(\lambda_{\mathrm{pcc}} = 0.02\)
-- \(\lambda_{\mathrm{cd}} = 0.25\)
+- $\lambda_{\mathrm{pcc}} = 0.02$
+- $\lambda_{\mathrm{cd}} = 0.25$
 
 #### 1) Distance regression (mutation magnitude)
 
 The main signal regresses cosine distance to a normalized mutation target:
 
-\[
+
+
+$$
 \mathcal{L}_{\mathrm{reg}} =
 \left(d(\bar{z}(r), \bar{z}(v)) - \tilde{n}\right)^2,\quad
 \tilde{n}=\min\left(\frac{n_{\text{mut}}}{\texttt{max\_n\_mut}}, 1\right).
-\]
+$$
 
-Defaults: `max_n_mut=20.0` (target is clamped to \([0,1]\)).
+
+
+Defaults: `max_n_mut=20.0` (target is clamped to $[0,1]$).
 
 #### 2) PCC ranking loss (within-group monotonicity)
 
-For each `group_id`, we sort samples by \(n_{\text{mut}}\) and apply a hinge loss over **adjacent** pairs only (for efficiency).
-Let \(d_i = d(\hat{u}_{\mathrm{pcc}}(r_i), \hat{u}_{\mathrm{pcc}}(v_i))\).
-For adjacent items with \(\Delta n = n_{i+1}-n_i > 0\) and \(\Delta d = d_{i+1}-d_i\):
+For each `group_id`, we sort samples by $n_{\text{mut}}$ and apply a hinge loss over **adjacent** pairs only (for efficiency).
+Let $d_i = d(\hat{u}_{\mathrm{pcc}}(r_i), \hat{u}_{\mathrm{pcc}}(v_i))$.
+For adjacent items with $\Delta n = n_{i+1}-n_i > 0$ and $\Delta d = d_{i+1}-d_i$:
 
-\[
+
+
+$$
 \mathcal{L}_{\mathrm{pcc}} = \mathrm{mean}\;\max(0, m(\Delta n) - \Delta d),
 \quad m(\Delta n) = \texttt{margin\_scale}\cdot \Delta n.
-\]
+$$
+
+
 
 Default: `margin_scale=1e-3`.
 
@@ -127,17 +159,21 @@ Default: `margin_scale=1e-3`.
 
 We keep the mean distance near a target CD:
 
-\[
+
+
+$$
 \mathcal{L}_{\mathrm{scale}} =
 \left(\mathbb{E}\left[d(\bar{z}(r),\bar{z}(v))\right] - \mu_{\text{target}}\right)^2.
-\]
+$$
+
+
 
 Default: `target_cd=0.13`.
 
 ### Inference modes
 
-- `--mode z` (best): output \(\bar{z}\) (dual-head only, 1024 dims by default).
-- `--mode concat`: output \(\mathrm{L2Norm}([\bar{h} \,\|\, \bar{z}])\).
+- `--mode z` (best): output $\bar{z}$ (dual-head only, 1024 dims by default).
+- `--mode concat`: output $\mathrm{L2Norm}([\bar{h} \,\|\, \bar{z}])$.
   If the concatenated dimension exceeds 2048, it is **truncated to 2048 before L2-normalization**.
 
 ## Train
