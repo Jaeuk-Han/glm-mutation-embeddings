@@ -1,5 +1,7 @@
 # glm-dna2vec-dualhead
 
+![example screenshot](example.png)
+
 Mutation-sensitive DNA embeddings using **dna2vec** with a **staged metric-learning**-style dual-head projection to optimize **CD / CDD / PCC**.
 
 This repo is intentionally kept minimal and **single-backbone (dna2vec) focused**.
