@@ -1,7 +1,5 @@
 # glm-dna2vec-dualhead
 
-![example screenshot](example.png)
-
 Mutation-sensitive DNA embeddings using **dna2vec** with a **staged metric-learning**-style dual-head projection to optimize **CD / CDD / PCC**.
 
 This repo is intentionally kept minimal and **single-backbone (dna2vec) focused**.
@@ -30,6 +28,8 @@ pip install torch transformers numpy pandas
 ## Methodology
 
 ### Motivation: tension between PCC and CDD
+
+![example screenshot](example.png)
 
 In this task, **mutation count** and **functional impact** are not always aligned.
 A single-nucleotide variant (SNV) can be highly disruptive (large embedding shift),
